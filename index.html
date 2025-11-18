@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clave - Plataforma de Aulas de Música</title>
+    <style>
+      :root {
+        --primary: #4a6fa5;
+        --secondary: #166088;
+        --accent: #4cb5f5;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --success: #28a745;
+        --danger: #dc3545;
+        --warning: #ffc107;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: var(--dark);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+      }
+
+      header {
+        background-color: var(--primary);
+        color: white;
+        padding: 1rem 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+      }
+
+      nav ul li {
+        margin-left: 1.5rem;
+      }
+
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+        transition: opacity 0.3s;
+      }
+
+      nav ul li a:hover {
+        opacity: 0.8;
+      }
+
+      .auth-buttons button {
+        background-color: white;
+        color: var(--primary);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 0.5rem;
+        font-weight: bold;
+      }
+
+      .auth-buttons button:hover {
+        background-color: #e6e6e6;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: background-color 0.3s;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--secondary);
+      }
+
+      .btn-success {
+        background-color: var(--success);
+        color: white;
+      }
+
+      .btn-danger {
+        background-color: var(--danger);
+        color: white;
+      }
+
+      .btn-warning {
+        background-color: var(--warning);
+        color: var(--dark);
+      }
+
+      .main-content {
+        padding: 2rem 0;
+      }
+
+      .section-title {
+        margin-bottom: 2rem;
+        text-align: center;
+        color: var(--secondary);
+      }
+
+      .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card-img {
+        height: 200px;
+        background-color: #ddd;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .card-content {
+        padding: 1.5rem;
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .card-text {
+        color: #666;
+        margin-bottom: 1rem;
+      }
+
+      .filters {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .filters-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .filter-group {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+      }
+
+      .calendar-day {
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 10px;
+        min-height: 100px;
+        cursor: pointer;
+      }
+
+      .calendar-day:hover {
+        background-color: #f0f0f0;
+      }
+
+      .calendar-day.disabled {
+        background-color: #f5f5f5;
+        color: #999;
+        cursor: not-allowed;
+      }
+
+      .calendar-day.selected {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .time-slots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .time-slot {
+        padding: 0.5rem 1rem;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .time-slot:hover {
+        background-color: #e0e0e0;
+      }
+
+      .time-slot.selected {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .time-slot.unavailable {
+        background-color: #ffcccc;
+        color: #999;
+        cursor: not-allowed;
+      }
+
+      .profile-header {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .profile-img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 2rem;
+      }
+
+      .profile-info h1 {
+        margin-bottom: 0.5rem;
+      }
+
+      .profile-info p {
+        color: #666;
+        margin-bottom: 1rem;
+      }
+
+      .rating {
+        color: var(--warning);
+        margin-bottom: 1rem;
+      }
+
+      .tab-container {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+      }
+
+      .tabs {
+        display: flex;
+        background-color: #f0f0f0;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .tab {
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .tab.active {
+        background-color: white;
+        border-bottom: 2px solid var(--primary);
+      }
+
+      .tab-content {
+        padding: 1.5rem;
+      }
+
+      .tab-pane {
+        display: none;
+      }
+
+      .tab-pane.active {
+        display: block;
+      }
+
+      .lesson-item {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .lesson-info h3 {
+        margin-bottom: 0.5rem;
+      }
+
+      .lesson-info p {
+        color: #666;
+      }
+
+      .review-form {
+        background-color: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+      }
+
+      .stars {
+        display: flex;
+        margin-bottom: 1rem;
+      }
+
+      .star {
+        font-size: 1.5rem;
+        color: #ddd;
+        cursor: pointer;
+        margin-right: 0.5rem;
+      }
+
+      .star.active {
+        color: var(--warning);
+      }
+
+      footer {
+        background-color: var(--dark);
+        color: white;
+        padding: 2rem 0;
+        margin-top: 3rem;
+      }
+
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 200px;
+        margin-bottom: 1.5rem;
+      }
+
+      .footer-section h3 {
+        margin-bottom: 1rem;
+      }
+
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-section ul li a {
+        color: #ddd;
+        text-decoration: none;
+      }
+
+      .footer-section ul li a:hover {
+        color: white;
+      }
+
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        nav ul {
+          margin-top: 1rem;
+          justify-content: center;
+        }
+
+        .auth-buttons {
+          margin-top: 1rem;
+        }
+
+        .profile-header {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .profile-img {
+          margin-right: 0;
+          margin-bottom: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container header-content">
+        <div class="logo">Clave</div>
+        <nav>
+          <ul>
+            <li><a href="#" class="nav-link" data-target="home">Início</a></li>
+            <li>
+              <a href="#" class="nav-link" data-target="teachers"
+                >Professores</a
+              >
+            </li>
+            <li>
+              <a href="#" class="nav-link" data-target="dashboard"
+                >Meu Painel</a
+              >
+            </li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <button id="login-btn">Entrar</button>
+          <button id="register-btn">Cadastrar</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container main-content">
+      <!-- Página Inicial -->
+      <section id="home-section" class="page-section">
+        <h1 class="section-title">
+          Encontre o professor perfeito para suas aulas de música
+        </h1>
+
+        <div class="filters">
+          <h2>Encontrar Professores</h2>
+          <div class="filters-row">
+            <div class="form-group filter-group">
+              <label for="instrument-filter">Instrumento</label>
+              <select id="instrument-filter">
+                <option value="">Todos</option>
+                <option value="violao">Violão</option>
+                <option value="piano">Piano</option>
+                <option value="guitarra">Guitarra</option>
+                <option value="violino">Violino</option>
+                <option value="bateria">Bateria</option>
+              </select>
+            </div>
+            <div class="form-group filter-group">
+              <label for="style-filter">Estilo Musical</label>
+              <select id="style-filter">
+                <option value="">Todos</option>
+                <option value="rock">Rock</option>
+                <option value="classico">Clássico</option>
+                <option value="jazz">Jazz</option>
+                <option value="mpb">MPB</option>
+                <option value="sertanejo">Sertanejo</option>
+              </select>
+            </div>
+          </div>
+          <div class="filters-row">
+            <div class="form-group filter-group">
+              <label for="level-filter">Nível</label>
+              <select id="level-filter">
+                <option value="">Todos</option>
+                <option value="iniciante">Iniciante</option>
+                <option value="intermediario">Intermediário</option>
+                <option value="avancado">Avançado</option>
+              </select>
+            </div>
+            <div class="form-group filter-group">
+              <label for="modality-filter">Modalidade</label>
+              <select id="modality-filter">
+                <option value="">Todas</option>
+                <option value="online">Online</option>
+                <option value="presencial">Presencial</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="search-teachers">
+            Buscar Professores
+          </button>
+        </div>
+
+        <h2>Professores em Destaque</h2>
+        <div class="cards-container" id="featured-teachers">
+          <!-- Conteúdo dinâmico será inserido via JavaScript -->
+        </div>
+      </section>
+
+      <!-- Página de Professores -->
+      <section id="teachers-section" class="page-section" style="display: none">
+        <h1 class="section-title">Encontre Seu Professor</h1>
+
+        <div class="filters">
+          <h2>Filtros de Busca</h2>
+          <div class="filters-row">
+            <div class="form-group filter-group">
+              <label for="teacher-instrument-filter">Instrumento</label>
+              <select id="teacher-instrument-filter">
+                <option value="">Todos</option>
+                <option value="violao">Violão</option>
+                <option value="piano">Piano</option>
+                <option value="guitarra">Guitarra</option>
+                <option value="violino">Violino</option>
+                <option value="bateria">Bateria</option>
+              </select>
+            </div>
+            <div class="form-group filter-group">
+              <label for="teacher-style-filter">Estilo Musical</label>
+              <select id="teacher-style-filter">
+                <option value="">Todos</option>
+                <option value="rock">Rock</option>
+                <option value="classico">Clássico</option>
+                <option value="jazz">Jazz</option>
+                <option value="mpb">MPB</option>
+                <option value="sertanejo">Sertanejo</option>
+              </select>
+            </div>
+            <div class="form-group filter-group">
+              <label for="teacher-level-filter">Nível</label>
+              <select id="teacher-level-filter">
+                <option value="">Todos</option>
+                <option value="iniciante">Iniciante</option>
+                <option value="intermediario">Intermediário</option>
+                <option value="avancado">Avançado</option>
+              </select>
+            </div>
+          </div>
+          <div class="filters-row">
+            <div class="form-group filter-group">
+              <label for="teacher-modality-filter">Modalidade</label>
+              <select id="teacher-modality-filter">
+                <option value="">Todas</option>
+                <option value="online">Online</option>
+                <option value="presencial">Presencial</option>
+              </select>
+            </div>
+            <div class="form-group filter-group">
+              <label for="price-filter">Preço Máximo (por hora)</label>
+              <input
+                type="range"
+                id="price-filter"
+                min="0"
+                max="200"
+                step="10"
+                value="200"
+              />
+              <span id="price-value">R$ 200,00</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="apply-filters">
+            Aplicar Filtros
+          </button>
+        </div>
+
+        <div class="cards-container" id="teachers-list">
+          <!-- Conteúdo dinâmico será inserido via JavaScript -->
+        </div>
+      </section>
+
+      <!-- Página de Perfil do Professor -->
+      <section
+        id="teacher-profile-section"
+        class="page-section"
+        style="display: none"
+      >
+        <div class="profile-header">
+          <img
+            src="https://via.placeholder.com/150"
+            alt="Professor"
+            class="profile-img"
+            id="teacher-profile-img"
+          />
+          <div class="profile-info">
+            <h1 id="teacher-name">Nome do Professor</h1>
+            <p id="teacher-instruments">Instrumentos: Piano, Violão</p>
+            <p id="teacher-style">Estilos: Clássico, MPB</p>
+            <p id="teacher-modality">Modalidade: Online e Presencial</p>
+            <p id="teacher-price">Preço: R$ 80,00/hora</p>
+            <div class="rating" id="teacher-rating">★★★★☆ (4.2)</div>
+            <button class="btn btn-primary" id="schedule-lesson-btn">
+              Agendar Aula
+            </button>
+          </div>
+        </div>
+
+        <div class="tab-container">
+          <div class="tabs">
+            <div class="tab active" data-tab="about">Sobre</div>
+            <div class="tab" data-tab="availability">Disponibilidade</div>
+            <div class="tab" data-tab="reviews">Avaliações</div>
+          </div>
+          <div class="tab-content">
+            <div class="tab-pane active" id="about-tab">
+              <h2>Biografia</h2>
+              <p id="teacher-bio">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+                auctor, nisl eu ultricies lacinia, nunc nisl aliquam nisl, eu
+                aliquam nisl nunc eu nisl. Nullam auctor, nisl eu ultricies
+                lacinia, nunc nisl aliquam nisl, eu aliquam nisl nunc eu nisl.
+              </p>
+
+              <h2>Vídeo de Demonstração</h2>
+              <div
+                style="
+                  position: relative;
+                  padding-bottom: 56.25%;
+                  height: 0;
+                  overflow: hidden;
+                  margin: 1rem 0;
+                "
+              >
+                <iframe
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                  style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: 0;
+                  "
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
+            <div class="tab-pane" id="availability-tab">
+              <h2>Agenda do Professor</h2>
+              <div id="teacher-calendar">
+                <!-- Calendário será gerado via JavaScript -->
+              </div>
+              <div
+                id="time-slots-container"
+                style="display: none; margin-top: 2rem"
+              >
+                <h3>
+                  Horários Disponíveis para <span id="selected-date"></span>
+                </h3>
+                <div class="time-slots" id="time-slots">
+                  <!-- Horários serão gerados via JavaScript -->
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="reviews-tab">
+              <h2>Avaliações dos Alunos</h2>
+              <div id="reviews-list">
+                <!-- Avaliações serão geradas via JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Página de Painel do Usuário -->
+      <section
+        id="dashboard-section"
+        class="page-section"
+        style="display: none"
+      >
+        <h1 class="section-title">Meu Painel</h1>
+
+        <div class="tab-container">
+          <div class="tabs">
+            <div class="tab active" data-tab="profile">Meu Perfil</div>
+            <div class="tab" data-tab="lessons">Minhas Aulas</div>
+            <div class="tab" data-tab="schedule">Minha Agenda</div>
+            <div class="tab" data-tab="financial">Financeiro</div>
+          </div>
+          <div class="tab-content">
+            <div class="tab-pane active" id="profile-tab">
+              <h2>Meu Perfil</h2>
+              <form id="profile-form">
+                <div class="form-group">
+                  <label for="profile-name">Nome Completo</label>
+                  <input type="text" id="profile-name" required />
+                </div>
+                <div class="form-group">
+                  <label for="profile-email">E-mail</label>
+                  <input type="email" id="profile-email" required />
+                </div>
+                <div class="form-group">
+                  <label for="profile-phone">Telefone</label>
+                  <input type="tel" id="profile-phone" />
+                </div>
+                <div class="form-group">
+                  <label for="profile-bio"
+                    >Biografia (apenas para professores)</label
+                  >
+                  <textarea id="profile-bio"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="profile-instruments"
+                    >Instrumentos que ensina (apenas para professores)</label
+                  >
+                  <input
+                    type="text"
+                    id="profile-instruments"
+                    placeholder="Ex: Violão, Piano, Guitarra"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="profile-styles"
+                    >Estilos musicais (apenas para professores)</label
+                  >
+                  <input
+                    type="text"
+                    id="profile-styles"
+                    placeholder="Ex: Rock, MPB, Clássico"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="profile-price"
+                    >Valor da hora/aula (apenas para professores)</label
+                  >
+                  <input type="number" id="profile-price" min="0" step="0.01" />
+                </div>
+                <div class="form-group">
+                  <label>Modalidades de ensino (apenas para professores)</label>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id="modalidade-online"
+                      value="online"
+                    />
+                    <label for="modalidade-online">Online</label>
+                  </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id="modalidade-presencial"
+                      value="presencial"
+                    />
+                    <label for="modalidade-presencial">Presencial</label>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Salvar Alterações
+                </button>
+              </form>
+            </div>
+            <div class="tab-pane" id="lessons-tab">
+              <h2>Minhas Aulas</h2>
+              <div id="upcoming-lessons">
+                <h3>Próximas Aulas</h3>
+                <!-- Aulas serão geradas via JavaScript -->
+              </div>
+              <div id="past-lessons">
+                <h3>Aulas Anteriores</h3>
+                <!-- Aulas serão geradas via JavaScript -->
+              </div>
+            </div>
+            <div class="tab-pane" id="schedule-tab">
+              <h2>Minha Agenda</h2>
+              <div id="user-calendar">
+                <!-- Calendário será gerado via JavaScript -->
+              </div>
+              <div id="user-time-slots" style="margin-top: 2rem">
+                <h3>Gerenciar Horários</h3>
+                <div class="time-slots" id="manage-time-slots">
+                  <!-- Horários serão gerados via JavaScript -->
+                </div>
+                <button
+                  class="btn btn-primary"
+                  id="save-availability"
+                  style="margin-top: 1rem"
+                >
+                  Salvar Disponibilidade
+                </button>
+              </div>
+            </div>
+            <div class="tab-pane" id="financial-tab">
+              <h2>Financeiro</h2>
+              <div id="transactions">
+                <h3>Histórico de Transações</h3>
+                <!-- Transações serão geradas via JavaScript -->
+              </div>
+              <div id="earnings" style="display: none">
+                <h3>Seus Ganhos</h3>
+                <!-- Ganhos serão gerados via JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal de Login -->
+    <div class="modal" id="login-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Entrar</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-email">E-mail</label>
+            <input type="email" id="login-email" required />
+          </div>
+          <div class="form-group">
+            <label for="login-password">Senha</label>
+            <input type="password" id="login-password" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Entrar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal de Cadastro -->
+    <div class="modal" id="register-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Criar Conta</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <form id="register-form">
+          <div class="form-group">
+            <label for="register-name">Nome Completo</label>
+            <input type="text" id="register-name" required />
+          </div>
+          <div class="form-group">
+            <label for="register-email">E-mail</label>
+            <input type="email" id="register-email" required />
+          </div>
+          <div class="form-group">
+            <label for="register-password">Senha</label>
+            <input type="password" id="register-password" required />
+          </div>
+          <div class="form-group">
+            <label for="register-type">Tipo de Usuário</label>
+            <select id="register-type" required>
+              <option value="">Selecione...</option>
+              <option value="aluno">Aluno</option>
+              <option value="professor">Professor</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Criar Conta</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal de Agendamento -->
+    <div class="modal" id="schedule-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Agendar Aula</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <div id="schedule-info">
+          <p>Professor: <span id="schedule-teacher-name"></span></p>
+          <p>Data: <span id="schedule-date"></span></p>
+          <p>Horário: <span id="schedule-time"></span></p>
+          <p>Valor: <span id="schedule-price"></span></p>
+        </div>
+        <form id="schedule-form">
+          <div class="form-group">
+            <label for="schedule-notes">Observações (opcional)</label>
+            <textarea id="schedule-notes"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Solicitar Agendamento
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal de Pagamento -->
+    <div class="modal" id="payment-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Pagamento</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <div id="payment-info">
+          <p>Professor: <span id="payment-teacher-name"></span></p>
+          <p>Data: <span id="payment-date"></span></p>
+          <p>Horário: <span id="payment-time"></span></p>
+          <p>Valor: <span id="payment-amount"></span></p>
+        </div>
+        <form id="payment-form">
+          <div class="form-group">
+            <label for="card-number">Número do Cartão</label>
+            <input
+              type="text"
+              id="card-number"
+              placeholder="1234 5678 9012 3456"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="card-name">Nome no Cartão</label>
+            <input type="text" id="card-name" required />
+          </div>
+          <div class="form-group" style="display: flex; gap: 1rem">
+            <div style="flex: 1">
+              <label for="card-expiry">Validade</label>
+              <input
+                type="text"
+                id="card-expiry"
+                placeholder="MM/AA"
+                required
+              />
+            </div>
+            <div style="flex: 1">
+              <label for="card-cvv">CVV</label>
+              <input type="text" id="card-cvv" placeholder="123" required />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Pagar Agora</button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container footer-content">
+        <div class="footer-section">
+          <h3>Clave</h3>
+          <p>Conectando alunos e professores de música.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Links Rápidos</h3>
+          <ul>
+            <li><a href="#">Início</a></li>
+            <li><a href="#">Professores</a></li>
+            <li><a href="#">Como funciona</a></li>
+            <li><a href="#">Preços</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Suporte</h3>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Contato</a></li>
+            <li><a href="#">Termos de Uso</a></li>
+            <li><a href="#">Política de Privacidade</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Dados de exemplo (em um sistema real, viriam de um backend)
+      const sampleTeachers = [
+        {
+          id: 1,
+          name: "Carlos Silva",
+          instruments: ["Piano", "Teclado"],
+          styles: ["Clássico", "MPB", "Jazz"],
+          levels: ["Iniciante", "Intermediário", "Avançado"],
+          modality: ["Online", "Presencial"],
+          price: 80,
+          bio: "Professor com 15 anos de experiência. Formado no Conservatório de Música de São Paulo.",
+          rating: 4.7,
+          reviews: 42,
+          image: "https://via.placeholder.com/300x200?text=Professor+Carlos",
+        },
+        {
+          id: 2,
+          name: "Ana Santos",
+          instruments: ["Violão", "Guitarra"],
+          styles: ["Rock", "MPB", "Pop"],
+          levels: ["Iniciante", "Intermediário"],
+          modality: ["Online"],
+          price: 70,
+          bio: "Guitarrista profissional com experiência em bandas e estúdio.",
+          rating: 4.5,
+          reviews: 28,
+          image: "https://via.placeholder.com/300x200?text=Professor+Ana",
+        },
+        {
+          id: 3,
+          name: "João Pereira",
+          instruments: ["Bateria"],
+          styles: ["Rock", "Jazz", "Blues"],
+          levels: ["Iniciante", "Intermediário", "Avançado"],
+          modality: ["Presencial"],
+          price: 90,
+          bio: "Baterista profissional com turnês internacionais.",
+          rating: 4.9,
+          reviews: 35,
+          image: "https://via.placeholder.com/300x200?text=Professor+João",
+        },
+      ];
+
+      const sampleLessons = [
+        {
+          id: 1,
+          teacherId: 1,
+          teacherName: "Carlos Silva",
+          studentId: 101,
+          studentName: "Aluno Teste",
+          date: "2023-06-15",
+          time: "14:00",
+          duration: 1,
+          price: 80,
+          status: "confirmed", // confirmed, pending, cancelled, completed
+          instrument: "Piano",
+        },
+        {
+          id: 2,
+          teacherId: 2,
+          teacherName: "Ana Santos",
+          studentId: 101,
+          studentName: "Aluno Teste",
+          date: "2023-06-20",
+          time: "16:00",
+          duration: 1,
+          price: 70,
+          status: "pending",
+          instrument: "Guitarra",
+        },
+      ];
+
+      // Estado da aplicação
+      let currentUser = null;
+      let currentPage = "home";
+      let selectedTeacher = null;
+      let selectedDate = null;
+      let selectedTime = null;
+
+      // Elementos DOM
+      const loginBtn = document.getElementById("login-btn");
+      const registerBtn = document.getElementById("register-btn");
+      const loginModal = document.getElementById("login-modal");
+      const registerModal = document.getElementById("register-modal");
+      const scheduleModal = document.getElementById("schedule-modal");
+      const paymentModal = document.getElementById("payment-modal");
+      const closeModalButtons = document.querySelectorAll(".close-modal");
+      const navLinks = document.querySelectorAll(".nav-link");
+      const pageSections = document.querySelectorAll(".page-section");
+      const searchTeachersBtn = document.getElementById("search-teachers");
+      const applyFiltersBtn = document.getElementById("apply-filters");
+      const scheduleLessonBtn = document.getElementById("schedule-lesson-btn");
+      const tabs = document.querySelectorAll(".tab");
+      const tabPanes = document.querySelectorAll(".tab-pane");
+      const priceFilter = document.getElementById("price-filter");
+      const priceValue = document.getElementById("price-value");
+
+      // Inicialização
+      document.addEventListener("DOMContentLoaded", function () {
+        // Carregar professores em destaque
+        renderFeaturedTeachers();
+
+        // Configurar filtro de preço
+        priceFilter.addEventListener("input", function () {
+          priceValue.textContent = `R$ ${this.value},00`;
+        });
+
+        // Verificar se há usuário logado
+        const savedUser = localStorage.getItem("currentUser");
+        if (savedUser) {
+          currentUser = JSON.parse(savedUser);
+          updateAuthButtons();
+        }
+      });
+
+      // Navegação
+      navLinks.forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = this.getAttribute("data-target");
+          showPage(target);
+        });
+      });
+
+      function showPage(page) {
+        // Esconder todas as seções
+        pageSections.forEach((section) => {
+          section.style.display = "none";
+        });
+
+        // Mostrar a seção solicitada
+        document.getElementById(`${page}-section`).style.display = "block";
+        currentPage = page;
+
+        // Carregar conteúdo específico da página
+        if (page === "teachers") {
+          renderTeachersList();
+        } else if (page === "dashboard" && currentUser) {
+          loadDashboard();
+        }
+      }
+
+      // Modais
+      loginBtn.addEventListener(
+        "click",
+        () => (loginModal.style.display = "flex")
+      );
+      registerBtn.addEventListener(
+        "click",
+        () => (registerModal.style.display = "flex")
+      );
+
+      closeModalButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          this.closest(".modal").style.display = "none";
+        });
+      });
+
+      // Fechar modal clicando fora dele
+      window.addEventListener("click", function (e) {
+        if (e.target.classList.contains("modal")) {
+          e.target.style.display = "none";
+        }
+      });
+
+      // Formulários
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const email = document.getElementById("login-email").value;
+          const password = document.getElementById("login-password").value;
+
+          // Simulação de login (em um sistema real, faria uma requisição ao backend)
+          const users = JSON.parse(localStorage.getItem("users") || "[]");
+          const user = users.find(
+            (u) => u.email === email && u.password === password
+          );
+
+          if (user) {
+            currentUser = user;
+            localStorage.setItem("currentUser", JSON.stringify(user));
+            loginModal.style.display = "none";
+            updateAuthButtons();
+            alert("Login realizado com sucesso!");
+          } else {
+            alert("E-mail ou senha incorretos.");
+          }
+        });
+
+      document
+        .getElementById("register-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const name = document.getElementById("register-name").value;
+          const email = document.getElementById("register-email").value;
+          const password = document.getElementById("register-password").value;
+          const type = document.getElementById("register-type").value;
+
+          // Validação básica
+          if (!name || !email || !password || !type) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+          }
+
+          // Verificar se o usuário já existe
+          const users = JSON.parse(localStorage.getItem("users") || "[]");
+          if (users.some((u) => u.email === email)) {
+            alert("Este e-mail já está cadastrado.");
+            return;
+          }
+
+          // Criar novo usuário
+          const newUser = {
+            id: Date.now(),
+            name,
+            email,
+            password,
+            type,
+            profileComplete: false,
+          };
+
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+
+          // Fazer login automaticamente
+          currentUser = newUser;
+          localStorage.setItem("currentUser", JSON.stringify(newUser));
+          registerModal.style.display = "none";
+          updateAuthButtons();
+
+          alert("Conta criada com sucesso! Complete seu perfil.");
+          showPage("dashboard");
+        });
+
+      document
+        .getElementById("profile-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          if (!currentUser) {
+            alert("Você precisa estar logado para atualizar o perfil.");
+            return;
+          }
+
+          // Atualizar informações do usuário
+          currentUser.name = document.getElementById("profile-name").value;
+          currentUser.email = document.getElementById("profile-email").value;
+          currentUser.phone = document.getElementById("profile-phone").value;
+
+          if (currentUser.type === "professor") {
+            currentUser.bio = document.getElementById("profile-bio").value;
+            currentUser.instruments = document
+              .getElementById("profile-instruments")
+              .value.split(",")
+              .map((i) => i.trim());
+            currentUser.styles = document
+              .getElementById("profile-styles")
+              .value.split(",")
+              .map((s) => s.trim());
+            currentUser.price = parseFloat(
+              document.getElementById("profile-price").value
+            );
+
+            const modalities = [];
+            if (document.getElementById("modalidade-online").checked)
+              modalities.push("online");
+            if (document.getElementById("modalidade-presencial").checked)
+              modalities.push("presencial");
+            currentUser.modality = modalities;
+          }
+
+          currentUser.profileComplete = true;
+
+          // Atualizar no localStorage
+          const users = JSON.parse(localStorage.getItem("users") || "[]");
+          const index = users.findIndex((u) => u.id === currentUser.id);
+          if (index !== -1) {
+            users[index] = currentUser;
+            localStorage.setItem("users", JSON.stringify(users));
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+          }
+
+          alert("Perfil atualizado com sucesso!");
+        });
+
+      // Funções de renderização
+      function renderFeaturedTeachers() {
+        const container = document.getElementById("featured-teachers");
+        container.innerHTML = "";
+
+        sampleTeachers.forEach((teacher) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+                    <div class="card-img" style="background-image: url('${
+                      teacher.image
+                    }')"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">${teacher.name}</h3>
+                        <p class="card-text">${teacher.instruments.join(
+                          ", "
+                        )}</p>
+                        <p class="card-text">${teacher.styles.join(", ")}</p>
+                        <p class="card-text">R$ ${teacher.price}/hora</p>
+                        <div class="rating">${"★".repeat(
+                          Math.floor(teacher.rating)
+                        )}${teacher.rating % 1 >= 0.5 ? "½" : ""} (${
+            teacher.rating
+          })</div>
+                        <button class="btn btn-primary view-profile" data-id="${
+                          teacher.id
+                        }">Ver Perfil</button>
+                    </div>
+                `;
+          container.appendChild(card);
+        });
+
+        // Adicionar event listeners aos botões
+        document.querySelectorAll(".view-profile").forEach((button) => {
+          button.addEventListener("click", function () {
+            const teacherId = parseInt(this.getAttribute("data-id"));
+            showTeacherProfile(teacherId);
+          });
+        });
+      }
+
+      function renderTeachersList() {
+        const container = document.getElementById("teachers-list");
+        container.innerHTML = "";
+
+        // Aplicar filtros (simplificado)
+        const instrumentFilter = document.getElementById(
+          "teacher-instrument-filter"
+        ).value;
+        const styleFilter = document.getElementById(
+          "teacher-style-filter"
+        ).value;
+        const levelFilter = document.getElementById(
+          "teacher-level-filter"
+        ).value;
+        const modalityFilter = document.getElementById(
+          "teacher-modality-filter"
+        ).value;
+        const maxPrice = parseInt(
+          document.getElementById("price-filter").value
+        );
+
+        const filteredTeachers = sampleTeachers.filter((teacher) => {
+          return (
+            (!instrumentFilter ||
+              teacher.instruments.includes(instrumentFilter)) &&
+            (!styleFilter || teacher.styles.includes(styleFilter)) &&
+            (!levelFilter || teacher.levels.includes(levelFilter)) &&
+            (!modalityFilter || teacher.modality.includes(modalityFilter)) &&
+            teacher.price <= maxPrice
+          );
+        });
+
+        if (filteredTeachers.length === 0) {
+          container.innerHTML =
+            "<p>Nenhum professor encontrado com os filtros selecionados.</p>";
+          return;
+        }
+
+        filteredTeachers.forEach((teacher) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+                    <div class="card-img" style="background-image: url('${
+                      teacher.image
+                    }')"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">${teacher.name}</h3>
+                        <p class="card-text">${teacher.instruments.join(
+                          ", "
+                        )}</p>
+                        <p class="card-text">${teacher.styles.join(", ")}</p>
+                        <p class="card-text">${teacher.levels.join(", ")}</p>
+                        <p class="card-text">${teacher.modality.join(", ")}</p>
+                        <p class="card-text">R$ ${teacher.price}/hora</p>
+                        <div class="rating">${"★".repeat(
+                          Math.floor(teacher.rating)
+                        )}${teacher.rating % 1 >= 0.5 ? "½" : ""} (${
+            teacher.rating
+          })</div>
+                        <button class="btn btn-primary view-profile" data-id="${
+                          teacher.id
+                        }">Ver Perfil</button>
+                    </div>
+                `;
+          container.appendChild(card);
+        });
+
+        // Adicionar event listeners aos botões
+        document.querySelectorAll(".view-profile").forEach((button) => {
+          button.addEventListener("click", function () {
+            const teacherId = parseInt(this.getAttribute("data-id"));
+            showTeacherProfile(teacherId);
+          });
+        });
+      }
+
+      function showTeacherProfile(teacherId) {
+        const teacher = sampleTeachers.find((t) => t.id === teacherId);
+        if (!teacher) return;
+
+        selectedTeacher = teacher;
+
+        // Preencher informações do professor
+        document.getElementById("teacher-name").textContent = teacher.name;
+        document.getElementById(
+          "teacher-instruments"
+        ).textContent = `Instrumentos: ${teacher.instruments.join(", ")}`;
+        document.getElementById(
+          "teacher-style"
+        ).textContent = `Estilos: ${teacher.styles.join(", ")}`;
+        document.getElementById(
+          "teacher-modality"
+        ).textContent = `Modalidade: ${teacher.modality.join(" e ")}`;
+        document.getElementById(
+          "teacher-price"
+        ).textContent = `Preço: R$ ${teacher.price},00/hora`;
+        document.getElementById("teacher-rating").innerHTML = `${"★".repeat(
+          Math.floor(teacher.rating)
+        )}${teacher.rating % 1 >= 0.5 ? "½" : ""} (${teacher.rating})`;
+        document.getElementById("teacher-bio").textContent = teacher.bio;
+
+        // Mostrar a página de perfil
+        showPage("teacher-profile");
+
+        // Gerar calendário
+        generateTeacherCalendar();
+      }
+
+      function generateTeacherCalendar() {
+        const calendarContainer = document.getElementById("teacher-calendar");
+        calendarContainer.innerHTML = "";
+
+        // Criar um calendário simples para demonstração
+        const today = new Date();
+        const month = today.getMonth();
+        const year = today.getFullYear();
+
+        // Cabeçalho do calendário
+        const monthNames = [
+          "Janeiro",
+          "Fevereiro",
+          "Março",
+          "Abril",
+          "Maio",
+          "Junho",
+          "Julho",
+          "Agosto",
+          "Setembro",
+          "Outubro",
+          "Novembro",
+          "Dezembro",
+        ];
+        const header = document.createElement("div");
+        header.innerHTML = `<h3>${monthNames[month]} ${year}</h3>`;
+        calendarContainer.appendChild(header);
+
+        // Dias da semana
+        const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+        const weekdaysRow = document.createElement("div");
+        weekdaysRow.style.display = "grid";
+        weekdaysRow.style.gridTemplateColumns = "repeat(7, 1fr)";
+        weekdaysRow.style.gap = "5px";
+        weekdaysRow.style.marginBottom = "5px";
+
+        weekdays.forEach((day) => {
+          const dayElement = document.createElement("div");
+          dayElement.textContent = day;
+          dayElement.style.textAlign = "center";
+          dayElement.style.fontWeight = "bold";
+          weekdaysRow.appendChild(dayElement);
+        });
+
+        calendarContainer.appendChild(weekdaysRow);
+
+        // Dias do mês
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        const calendarGrid = document.createElement("div");
+        calendarGrid.className = "calendar";
+
+        // Dias vazios no início
+        for (let i = 0; i < firstDay; i++) {
+          const emptyDay = document.createElement("div");
+          emptyDay.className = "calendar-day disabled";
+          calendarGrid.appendChild(emptyDay);
+        }
+
+        // Dias do mês
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dayElement = document.createElement("div");
+          dayElement.className = "calendar-day";
+          dayElement.textContent = day;
+
+          // Marcar dias disponíveis (apenas para demonstração)
+          const dateStr = `${year}-${String(month + 1).padStart(
+            2,
+            "0"
+          )}-${String(day).padStart(2, "0")}`;
+          const dayOfWeek = new Date(year, month, day).getDay();
+
+          // Simular disponibilidade: dias de semana e alguns sábados
+          if (
+            dayOfWeek !== 0 &&
+            (dayOfWeek !== 6 || day % 2 === 0) &&
+            day >= today.getDate()
+          ) {
+            dayElement.addEventListener("click", function () {
+              // Remover seleção anterior
+              document
+                .querySelectorAll(".calendar-day.selected")
+                .forEach((el) => {
+                  el.classList.remove("selected");
+                });
+
+              // Selecionar este dia
+              this.classList.add("selected");
+              selectedDate = dateStr;
+
+              // Mostrar horários disponíveis
+              showAvailableTimeSlots();
+            });
+          } else {
+            dayElement.classList.add("disabled");
+          }
+
+          calendarGrid.appendChild(dayElement);
+        }
+
+        calendarContainer.appendChild(calendarGrid);
+      }
+
+      function showAvailableTimeSlots() {
+        const container = document.getElementById("time-slots-container");
+        const dateElement = document.getElementById("selected-date");
+        const slotsContainer = document.getElementById("time-slots");
+
+        // Formatar data
+        const date = new Date(selectedDate);
+        const formattedDate = date.toLocaleDateString("pt-BR", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        });
+        dateElement.textContent = formattedDate;
+
+        // Gerar horários disponíveis (apenas para demonstração)
+        slotsContainer.innerHTML = "";
+
+        // Horários disponíveis baseados no dia da semana
+        const dayOfWeek = date.getDay();
+        let availableSlots = [];
+
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+          // Dias de semana
+          availableSlots = [
+            "09:00",
+            "10:00",
+            "11:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+          ];
+        } else if (dayOfWeek === 6) {
+          // Sábados
+          availableSlots = ["09:00", "10:00", "11:00", "14:00", "15:00"];
+        }
+
+        availableSlots.forEach((time) => {
+          const slotElement = document.createElement("div");
+          slotElement.className = "time-slot";
+          slotElement.textContent = time;
+
+          slotElement.addEventListener("click", function () {
+            // Remover seleção anterior
+            document.querySelectorAll(".time-slot.selected").forEach((el) => {
+              el.classList.remove("selected");
+            });
+
+            // Selecionar este horário
+            this.classList.add("selected");
+            selectedTime = time;
+
+            // Habilitar botão de agendamento se estiver logado
+            if (currentUser) {
+              scheduleLessonBtn.disabled = false;
+            }
+          });
+
+          slotsContainer.appendChild(slotElement);
+        });
+
+        container.style.display = "block";
+      }
+
+      // Agendamento de aula
+      scheduleLessonBtn.addEventListener("click", function () {
+        if (!currentUser) {
+          alert("Você precisa estar logado para agendar uma aula.");
+          loginModal.style.display = "flex";
+          return;
+        }
+
+        if (!selectedDate || !selectedTime) {
+          alert("Por favor, selecione uma data e horário.");
+          return;
+        }
+
+        // Preencher informações no modal de agendamento
+        document.getElementById("schedule-teacher-name").textContent =
+          selectedTeacher.name;
+        document.getElementById("schedule-date").textContent = new Date(
+          selectedDate
+        ).toLocaleDateString("pt-BR");
+        document.getElementById("schedule-time").textContent = selectedTime;
+        document.getElementById(
+          "schedule-price"
+        ).textContent = `R$ ${selectedTeacher.price},00`;
+
+        // Mostrar modal de agendamento
+        scheduleModal.style.display = "flex";
+      });
+
+      document
+        .getElementById("schedule-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Fechar modal de agendamento
+          scheduleModal.style.display = "none";
+
+          // Mostrar modal de pagamento
+          document.getElementById("payment-teacher-name").textContent =
+            selectedTeacher.name;
+          document.getElementById("payment-date").textContent = new Date(
+            selectedDate
+          ).toLocaleDateString("pt-BR");
+          document.getElementById("payment-time").textContent = selectedTime;
+          document.getElementById(
+            "payment-amount"
+          ).textContent = `R$ ${selectedTeacher.price},00`;
+
+          paymentModal.style.display = "flex";
+        });
+
+      document
+        .getElementById("payment-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Simular processamento de pagamento
+          alert("Pagamento processado com sucesso! A aula foi agendada.");
+
+          // Fechar modal de pagamento
+          paymentModal.style.display = "none";
+
+          // Criar nova aula
+          const newLesson = {
+            id: Date.now(),
+            teacherId: selectedTeacher.id,
+            teacherName: selectedTeacher.name,
+            studentId: currentUser.id,
+            studentName: currentUser.name,
+            date: selectedDate,
+            time: selectedTime,
+            duration: 1,
+            price: selectedTeacher.price,
+            status: "pending",
+            instrument: selectedTeacher.instruments[0],
+          };
+
+          // Salvar aula (em um sistema real, enviaria para o backend)
+          const lessons = JSON.parse(localStorage.getItem("lessons") || "[]");
+          lessons.push(newLesson);
+          localStorage.setItem("lessons", JSON.stringify(lessons));
+
+          // Limpar seleções
+          selectedDate = null;
+          selectedTime = null;
+
+          // Notificar professor (simulado)
+          alert(
+            `Solicitação de aula enviada para ${selectedTeacher.name}. Você será notificado quando for confirmada.`
+          );
+        });
+
+      // Sistema de abas
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", function () {
+          const tabId = this.getAttribute("data-tab");
+
+          // Remover classe active de todas as abas e painéis
+          tabs.forEach((t) => t.classList.remove("active"));
+          tabPanes.forEach((p) => p.classList.remove("active"));
+
+          // Adicionar classe active à aba e painel clicados
+          this.classList.add("active");
+          document.getElementById(`${tabId}-tab`).classList.add("active");
+        });
+      });
+
+      // Dashboard do usuário
+      function loadDashboard() {
+        if (!currentUser) return;
+
+        // Preencher formulário de perfil
+        document.getElementById("profile-name").value = currentUser.name || "";
+        document.getElementById("profile-email").value =
+          currentUser.email || "";
+        document.getElementById("profile-phone").value =
+          currentUser.phone || "";
+
+        if (currentUser.type === "professor") {
+          document.getElementById("profile-bio").value = currentUser.bio || "";
+          document.getElementById("profile-instruments").value =
+            currentUser.instruments ? currentUser.instruments.join(", ") : "";
+          document.getElementById("profile-styles").value = currentUser.styles
+            ? currentUser.styles.join(", ")
+            : "";
+          document.getElementById("profile-price").value =
+            currentUser.price || "";
+
+          if (currentUser.modality) {
+            document.getElementById("modalidade-online").checked =
+              currentUser.modality.includes("online");
+            document.getElementById("modalidade-presencial").checked =
+              currentUser.modality.includes("presencial");
+          }
+
+          // Mostrar seção de ganhos para professores
+          document.getElementById("earnings").style.display = "block";
+        } else {
+          // Esconder campos específicos de professores para alunos
+          document
+            .getElementById("profile-bio")
+            .closest(".form-group").style.display = "none";
+          document
+            .getElementById("profile-instruments")
+            .closest(".form-group").style.display = "none";
+          document
+            .getElementById("profile-styles")
+            .closest(".form-group").style.display = "none";
+          document
+            .getElementById("profile-price")
+            .closest(".form-group").style.display = "none";
+          document
+            .querySelectorAll('.form-group input[type="checkbox"]')
+            .forEach((cb) => {
+              cb.closest("div").style.display = "none";
+            });
+
+          // Esconder seção de ganhos para alunos
+          document.getElementById("earnings").style.display = "none";
+        }
+
+        // Carregar aulas
+        loadUserLessons();
+
+        // Carregar transações
+        loadTransactions();
+      }
+
+      function loadUserLessons() {
+        const upcomingContainer = document.getElementById("upcoming-lessons");
+        const pastContainer = document.getElementById("past-lessons");
+
+        // Limpar containers
+        upcomingContainer.innerHTML = "<h3>Próximas Aulas</h3>";
+        pastContainer.innerHTML = "<h3>Aulas Anteriores</h3>";
+
+        // Obter aulas do usuário (em um sistema real, viriam do backend)
+        const lessons = JSON.parse(localStorage.getItem("lessons") || "[]");
+        const userLessons = lessons.filter(
+          (lesson) =>
+            lesson.studentId === currentUser.id ||
+            (currentUser.type === "professor" &&
+              lesson.teacherId === currentUser.id)
+        );
+
+        if (userLessons.length === 0) {
+          upcomingContainer.innerHTML += "<p>Você não tem aulas agendadas.</p>";
+          pastContainer.innerHTML += "<p>Nenhuma aula anterior.</p>";
+          return;
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+
+        userLessons.forEach((lesson) => {
+          const lessonElement = document.createElement("div");
+          lessonElement.className = "lesson-item";
+
+          let statusText = "";
+          let statusClass = "";
+
+          switch (lesson.status) {
+            case "confirmed":
+              statusText = "Confirmada";
+              statusClass = "btn-success";
+              break;
+            case "pending":
+              statusText = "Pendente";
+              statusClass = "btn-warning";
+              break;
+            case "cancelled":
+              statusText = "Cancelada";
+              statusClass = "btn-danger";
+              break;
+            case "completed":
+              statusText = "Concluída";
+              statusClass = "btn-primary";
+              break;
+          }
+
+          lessonElement.innerHTML = `
+                    <div class="lesson-info">
+                        <h3>${
+                          currentUser.type === "professor"
+                            ? `Aluno: ${lesson.studentName}`
+                            : `Professor: ${lesson.teacherName}`
+                        }</h3>
+                        <p>Data: ${new Date(lesson.date).toLocaleDateString(
+                          "pt-BR"
+                        )} às ${lesson.time}</p>
+                        <p>Instrumento: ${lesson.instrument}</p>
+                        <p>Valor: R$ ${lesson.price},00</p>
+                    </div>
+                    <div>
+                        <span class="btn ${statusClass}">${statusText}</span>
+                        ${
+                          lesson.status === "confirmed" && lesson.date >= today
+                            ? `<button class="btn btn-danger cancel-lesson" data-id="${lesson.id}">Cancelar</button>`
+                            : ""
+                        }
+                        ${
+                          lesson.status === "completed" &&
+                          currentUser.type === "aluno"
+                            ? `<button class="btn btn-primary review-lesson" data-id="${lesson.id}">Avaliar</button>`
+                            : ""
+                        }
+                    </div>
+                `;
+
+          if (lesson.date >= today) {
+            upcomingContainer.appendChild(lessonElement);
+          } else {
+            pastContainer.appendChild(lessonElement);
+          }
+        });
+
+        // Adicionar event listeners aos botões
+        document.querySelectorAll(".cancel-lesson").forEach((button) => {
+          button.addEventListener("click", function () {
+            const lessonId = parseInt(this.getAttribute("data-id"));
+            cancelLesson(lessonId);
+          });
+        });
+
+        document.querySelectorAll(".review-lesson").forEach((button) => {
+          button.addEventListener("click", function () {
+            const lessonId = parseInt(this.getAttribute("data-id"));
+            reviewLesson(lessonId);
+          });
+        });
+      }
+
+      function cancelLesson(lessonId) {
+        if (confirm("Tem certeza que deseja cancelar esta aula?")) {
+          // Verificar política de cancelamento (simulado: até 24 horas antes)
+          const lessons = JSON.parse(localStorage.getItem("lessons") || "[]");
+          const lessonIndex = lessons.findIndex((l) => l.id === lessonId);
+
+          if (lessonIndex !== -1) {
+            const lesson = lessons[lessonIndex];
+            const lessonDateTime = new Date(`${lesson.date}T${lesson.time}`);
+            const now = new Date();
+            const hoursDiff = (lessonDateTime - now) / (1000 * 60 * 60);
+
+            if (hoursDiff < 24) {
+              alert(
+                "Cancelamento não permitido com menos de 24 horas de antecedência."
+              );
+              return;
+            }
+
+            // Atualizar status da aula
+            lessons[lessonIndex].status = "cancelled";
+            localStorage.setItem("lessons", JSON.stringify(lessons));
+
+            alert("Aula cancelada com sucesso.");
+            loadUserLessons(); // Recarregar a lista de aulas
+          }
+        }
+      }
+
+      function reviewLesson(lessonId) {
+        // Implementar sistema de avaliação
+        const rating = prompt("Avalie o professor de 1 a 5 estrelas:");
+        if (rating && rating >= 1 && rating <= 5) {
+          const comment = prompt("Deixe um comentário (opcional):");
+          alert("Avaliação enviada com sucesso!");
+          // Em um sistema real, salvaríamos a avaliação no backend
+        }
+      }
+
+      function loadTransactions() {
+        const transactionsContainer = document.getElementById("transactions");
+        transactionsContainer.innerHTML = "<h3>Histórico de Transações</h3>";
+
+        // Obter transações do usuário (simulado)
+        const transactions = [
+          {
+            id: 1,
+            date: "2023-06-10",
+            description: "Aula de Piano com Carlos Silva",
+            amount: -80.0,
+            status: "completed",
+          },
+          {
+            id: 2,
+            date: "2023-05-25",
+            description: "Aula de Guitarra com Ana Santos",
+            amount: -70.0,
+            status: "completed",
+          },
+          {
+            id: 3,
+            date: "2023-06-15",
+            description: "Aula de Piano com Carlos Silva",
+            amount: -80.0,
+            status: "pending",
+          },
+        ];
+
+        if (transactions.length === 0) {
+          transactionsContainer.innerHTML +=
+            "<p>Nenhuma transação encontrada.</p>";
+          return;
+        }
+
+        transactions.forEach((transaction) => {
+          const transactionElement = document.createElement("div");
+          transactionElement.className = "lesson-item";
+          transactionElement.innerHTML = `
+                    <div class="lesson-info">
+                        <h3>${transaction.description}</h3>
+                        <p>Data: ${new Date(
+                          transaction.date
+                        ).toLocaleDateString("pt-BR")}</p>
+                        <p>Status: ${
+                          transaction.status === "completed"
+                            ? "Concluída"
+                            : "Pendente"
+                        }</p>
+                    </div>
+                    <div>
+                        <span class="btn ${
+                          transaction.amount < 0 ? "btn-danger" : "btn-success"
+                        }">
+                            R$ ${Math.abs(transaction.amount).toFixed(2)}
+                        </span>
+                    </div>
+                `;
+          transactionsContainer.appendChild(transactionElement);
+        });
+
+        // Se for professor, carregar ganhos
+        if (currentUser.type === "professor") {
+          const earningsContainer = document.getElementById("earnings");
+          earningsContainer.innerHTML = "<h3>Seus Ganhos</h3>";
+
+          const earnings = [
+            { period: "Junho 2023", amount: 1200.0, status: "pending" },
+            { period: "Maio 2023", amount: 1500.0, status: "paid" },
+            { period: "Abril 2023", amount: 1350.0, status: "paid" },
+          ];
+
+          earnings.forEach((earning) => {
+            const earningElement = document.createElement("div");
+            earningElement.className = "lesson-item";
+            earningElement.innerHTML = `
+                        <div class="lesson-info">
+                            <h3>${earning.period}</h3>
+                            <p>Status: ${
+                              earning.status === "paid" ? "Pago" : "A receber"
+                            }</p>
+                        </div>
+                        <div>
+                            <span class="btn btn-success">
+                                R$ ${earning.amount.toFixed(2)}
+                            </span>
+                        </div>
+                    `;
+            earningsContainer.appendChild(earningElement);
+          });
+        }
+      }
+
+      function updateAuthButtons() {
+        if (currentUser) {
+          loginBtn.textContent = "Sair";
+          registerBtn.textContent = currentUser.name;
+
+          // Alterar comportamento dos botões
+          loginBtn.onclick = function () {
+            currentUser = null;
+            localStorage.removeItem("currentUser");
+            updateAuthButtons();
+            alert("Você saiu da sua conta.");
+          };
+
+          registerBtn.onclick = function () {
+            showPage("dashboard");
+          };
+        } else {
+          loginBtn.textContent = "Entrar";
+          registerBtn.textContent = "Cadastrar";
+
+          // Restaurar comportamento original
+          loginBtn.onclick = function () {
+            loginModal.style.display = "flex";
+          };
+
+          registerBtn.onclick = function () {
+            registerModal.style.display = "flex";
+          };
+        }
+      }
+
+      // Busca de professores
+      searchTeachersBtn.addEventListener("click", function () {
+        showPage("teachers");
+      });
+
+      applyFiltersBtn.addEventListener("click", function () {
+        renderTeachersList();
+      });
+    </script>
+  </body>
+</html>
